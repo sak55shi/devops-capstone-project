@@ -1,10 +1,11 @@
+
 """
 Account Service
 
-This microservice handles the lifecycle of Accounts
+This microservice handles the lifecycle of Accounts.
 """
-# pylint: disable=unused-import
-from flask import jsonify, request, make_response, abort, url_for   # noqa; F401
+
+from flask import jsonify, request, make_response, abort, url_for  # noqa: F401
 from service.models import Account
 from service.common import status  # HTTP Status Codes
 from . import app  # Import Flask application
@@ -15,7 +16,7 @@ from . import app  # Import Flask application
 ############################################################
 @app.route("/health")
 def health():
-    """Health Status"""
+    """Health Status."""
     return jsonify(dict(status="OK")), status.HTTP_200_OK
 
 
@@ -24,7 +25,7 @@ def health():
 ######################################################################
 @app.route("/")
 def index():
-    """Root URL response"""
+    """Root URL response."""
     return (
         jsonify(
             name="Account REST API Service",
@@ -41,8 +42,10 @@ def index():
 @app.route("/accounts", methods=["POST"])
 def create_accounts():
     """
-    Creates an Account
-    This endpoint will create an Account based the data in the body that is posted
+    Creates an Account.
+
+    This endpoint creates an Account using the data posted
+    in the body.
     """
     app.logger.info("Request to create an Account")
     check_content_type("application/json")
@@ -50,51 +53,58 @@ def create_accounts():
     account.deserialize(request.get_json())
     account.create()
     message = account.serialize()
-    # Uncomment once get_accounts has been implemented
-    # location_url = url_for("get_accounts", account_id=account.id, _external=True)
-    location_url = "/"  # Remove once get_accounts has been implemented
+
+    # Uncomment once get_accounts has been implemented.
+    # location_url = url_for(
+    #     "get_accounts", account_id=account.id, _external=True
+    # )
+    location_url = "/"  # Remove once get_accounts has been implemented.
+
     return make_response(
         jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
     )
+
 
 ######################################################################
 # LIST ALL ACCOUNTS
 ######################################################################
 
-# ... place you code here to LIST accounts ...
+# TODO: Implement the LIST accounts endpoint.
 
 
 ######################################################################
 # READ AN ACCOUNT
 ######################################################################
 
-# ... place you code here to READ an account ...
+# TODO: Implement the READ an account endpoint.
 
 
 ######################################################################
 # UPDATE AN EXISTING ACCOUNT
 ######################################################################
 
-# ... place you code here to UPDATE an account ...
+# TODO: Implement the UPDATE an account endpoint.
 
 
 ######################################################################
 # DELETE AN ACCOUNT
 ######################################################################
 
-# ... place you code here to DELETE an account ...
+# TODO: Implement the DELETE an account endpoint.
 
 
 ######################################################################
-#  U T I L I T Y   F U N C T I O N S
+# UTILITY FUNCTIONS
 ######################################################################
 
 
 def check_content_type(media_type):
-    """Checks that the media type is correct"""
+    """Check that the request content type is correct."""
     content_type = request.headers.get("Content-Type")
+
     if content_type and content_type == media_type:
         return
+
     app.logger.error("Invalid Content-Type: %s", content_type)
     abort(
         status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
