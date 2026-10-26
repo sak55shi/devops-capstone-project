@@ -69,28 +69,55 @@ def create_accounts():
 # LIST ALL ACCOUNTS
 ######################################################################
 
-# TODO: Implement the LIST accounts endpoint.
+@app.route("/accounts", methods=["GET"])
+def list_accounts():
+    """Returns all accounts."""
+    accounts = Account.all()
+    results = [account.serialize() for account in accounts]
+    return jsonify(results), status.HTTP_200_OK
 
 
 ######################################################################
 # READ AN ACCOUNT
 ######################################################################
 
-# TODO: Implement the READ an account endpoint.
+@app.route("/accounts/<int:account_id>", methods=["GET"])
+def get_accounts(account_id):
+    """Reads a single account."""
+    account = Account.find(account_id)
+    if account is None:
+        abort(status.HTTP_404_NOT_FOUND, "Account not found")
+    return jsonify(account.serialize()), status.HTTP_200_OK
 
 
 ######################################################################
 # UPDATE AN EXISTING ACCOUNT
 ######################################################################
 
-# TODO: Implement the UPDATE an account endpoint.
+@app.route("/accounts/<int:account_id>", methods=["PUT"])
+def update_accounts(account_id):
+    """Updates an existing account."""
+    check_content_type("application/json")
+    account = Account.find(account_id)
+    if account is None:
+        abort(status.HTTP_404_NOT_FOUND, "Account not found")
+    account.deserialize(request.get_json())
+    account.update()
+    return jsonify(account.serialize()), status.HTTP_200_OK
 
 
 ######################################################################
 # DELETE AN ACCOUNT
 ######################################################################
 
-# TODO: Implement the DELETE an account endpoint.
+@app.route("/accounts/<int:account_id>", methods=["DELETE"])
+def delete_accounts(account_id):
+    """Deletes an account."""
+    account = Account.find(account_id)
+    if account is None:
+        abort(status.HTTP_404_NOT_FOUND, "Account not found")
+    account.delete()
+    return "", status.HTTP_204_NO_CONTENT
 
 
 ######################################################################
